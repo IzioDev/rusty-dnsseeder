@@ -34,7 +34,8 @@ COPY src ./src
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
     --mount=type=cache,target=/app/target \
-    cargo build --release
+    cargo build --release && \
+    cp /app/target/release/dnsseeder /app/dnsseeder
 
 # --- multistage docker build: stage #2: runtime image
 FROM debian:bookworm-slim
@@ -42,6 +43,6 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /app/target/release/dnsseeder /app/dnsseeder
+COPY --from=builder /app/dnsseeder /app/dnsseeder
 
 ENTRYPOINT ["/app/dnsseeder"]
