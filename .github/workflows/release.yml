@@ -70,6 +70,19 @@ jobs:
           toolchain: stable
           targets: ${{ matrix.target }}
 
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: false
+          cache-bin: "false"
+          cache-all-crates: "false"
+          cache-workspace-crates: "false"
+          add-job-id-key: "false"
+          add-rust-environment-hash-key: "false"
+          prefix-key: dnsseeder
+          key: ${{ runner.os }}-${{ matrix.target || 'native' }}-release
+          save-if: ${{ github.ref == 'refs/heads/master' }}
+
       - name: Install protoc
         uses: arduino/setup-protoc@v3
 
@@ -152,3 +165,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

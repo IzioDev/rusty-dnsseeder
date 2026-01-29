@@ -34,3 +34,9 @@ uuid = { version = "1.10", features = ["v4"] }
 
 [build-dependencies]
 tonic-build = "0.12"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+opt-level = 3
+strip = true
